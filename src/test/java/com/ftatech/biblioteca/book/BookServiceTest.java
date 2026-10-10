@@ -62,6 +62,19 @@ class BookServiceTest {
     }
 
     @Test
+    void shouldRejectBookWithDuplicateIsbn() {
+        Book book = new Book("Clean Code", "Robert C. Martin", "9780132350884", true);
+        when(bookRepository.existsByIsbn(book.getIsbn())).thenReturn(true);
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
+                () -> bookService.create(book));
+
+        assertEquals(409, exception.getStatusCode().value());
+        verify(bookRepository, org.mockito.Mockito.never()).save(book);
+    }
+
+    @Test
     void shouldUpdateBook() {
         Book existingBook = new Book("Old title", "Old author", "old-isbn", false);
         Book input = new Book("New title", "New author", "new-isbn", true);

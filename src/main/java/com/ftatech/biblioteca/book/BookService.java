@@ -39,13 +39,27 @@ public class BookService {
     }
 
     public Book create(Book book) {
+        ensureIsbnIsAvailable(book.getIsbn());
         return bookRepository.save(book);
     }
 
     public Book update(Long id, Book input) {
         Book book = findById(id);
+        ensureIsbnIsAvailable(input.getIsbn(), id);
         book.update(input.getTitle(), input.getAuthor(), input.getIsbn(), input.isAvailable());
         return bookRepository.save(book);
+    }
+
+    private void ensureIsbnIsAvailable(String isbn) {
+        if (bookRepository.existsByIsbn(isbn)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ISBN is already registered");
+        }
+    }
+
+    private void ensureIsbnIsAvailable(String isbn, Long id) {
+        if (bookRepository.existsByIsbnAndIdNot(isbn, id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "ISBN is already registered");
+        }
     }
 
     public Book markAsBorrowed(Long id) {
