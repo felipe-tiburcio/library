@@ -15,8 +15,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(BookController.class)
@@ -42,6 +42,18 @@ class BookControllerTest {
     }
 
     @Test
+    void shouldFilterBooksByQueryParameters() throws Exception {
+        when(bookService.findAll(any(BookSearchCriteria.class))).thenReturn(List.of(
+                new Book("Clean Code", "Robert C. Martin", "9780132350884", true)));
+
+        mockMvc.perform(get("/api/books")
+                        .param("title", "clean")
+                        .param("available", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value("Clean Code"));
+    }
+
+    @Test
     void shouldCreateBook() throws Exception {
         Book book = new Book("Clean Code", "Robert C. Martin", "9780132350884", true);
         when(bookService.create(any(Book.class))).thenReturn(book);
@@ -49,7 +61,7 @@ class BookControllerTest {
         mockMvc.perform(post("/api/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"title":"Clean Code","author":"Robert C. Martin", 
+                                {"title":"Clean Code","author":"Robert C. Martin",
                                 "isbn":"9780132350884","available":true}
                                 """))
                 .andExpect(status().isCreated())
@@ -64,7 +76,7 @@ class BookControllerTest {
         mockMvc.perform(put("/api/books/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"title":"Clean Code","author":"Robert C. Martin", 
+                                {"title":"Clean Code","author":"Robert C. Martin",
                                 "isbn":"9780132350884","available":true}
                                 """))
                 .andExpect(status().isOk())

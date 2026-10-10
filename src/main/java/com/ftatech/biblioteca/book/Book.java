@@ -63,4 +63,12 @@ public class Book {
         this.isbn = isbn;
         this.available = available;
     }
+
+    public void markAsBorrowed() {
+        this.available = false;
+    }
+
+    public void markAsReturned() {
+        this.available = true;
+    }
 }

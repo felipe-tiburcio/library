@@ -40,6 +40,17 @@ class BookServiceTest {
     }
 
     @Test
+    void shouldFilterBooksByCriteria() {
+        Book matchingBook = new Book("Clean Code", "Robert C. Martin", "9780132350884", true);
+        Book otherBook = new Book("The Pragmatic Programmer", "Andrew Hunt", "9780201616224", false);
+        when(bookRepository.findAll()).thenReturn(List.of(matchingBook, otherBook));
+
+        List<Book> result = bookService.findAll(new BookSearchCriteria("clean", "martin", null, true));
+
+        assertEquals(List.of(matchingBook), result);
+    }
+
+    @Test
     void shouldCreateBook() {
         Book book = new Book("Clean Code", "Robert C. Martin", "9780132350884", true);
         when(bookRepository.save(book)).thenReturn(book);

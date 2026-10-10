@@ -2,12 +2,16 @@ package com.ftatech.biblioteca.user;
 
 import java.time.LocalDate;
 
+import com.ftatech.biblioteca.book.Book;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -19,25 +23,63 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bookTitle;
-    private LocalDate borrowedAt;
-    private LocalDate returnedAt;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    protected Loan() { }
+    @Column(nullable = false)
+    private LocalDate borrowedAt;
 
-    public Loan(String bookTitle, LocalDate borrowedAt, LocalDate returnedAt, User user) {
-        this.bookTitle = bookTitle;
-        this.borrowedAt = borrowedAt;
-        this.returnedAt = returnedAt;
-        this.user = user;
+    @Column(nullable = false)
+    private LocalDate dueDate;
+
+    private LocalDate returnedAt;
+
+    protected Loan() {
     }
 
-    public Long getId() { return id; }
-    public String getBookTitle() { return bookTitle; }
-    public LocalDate getBorrowedAt() { return borrowedAt; }
-    public LocalDate getReturnedAt() { return returnedAt; }
+    public Loan(Book book, User user, LocalDate borrowedAt, LocalDate dueDate) {
+        this.book = book;
+        this.user = user;
+        this.borrowedAt = borrowedAt;
+        this.dueDate = dueDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public LocalDate getBorrowedAt() {
+        return borrowedAt;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public LocalDate getReturnedAt() {
+        return returnedAt;
+    }
+
+    public boolean isReturned() {
+        return returnedAt != null;
+    }
+
+    public void returnBook(LocalDate returnedAt) {
+        this.returnedAt = returnedAt;
+    }
 }

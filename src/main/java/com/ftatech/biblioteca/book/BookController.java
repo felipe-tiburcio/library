@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,8 +25,15 @@ public class BookController {
     }
 
     @GetMapping
-    public List<Book> findAll() {
-        return bookService.findAll();
+    public List<Book> findAll(@RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) Boolean available) {
+        if (title == null && author == null && isbn == null && available == null) {
+            return bookService.findAll();
+        }
+
+        return bookService.findAll(new BookSearchCriteria(title, author, isbn, available));
     }
 
     @GetMapping("/{id}")

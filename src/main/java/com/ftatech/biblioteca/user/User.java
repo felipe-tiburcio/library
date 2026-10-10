@@ -34,7 +34,7 @@ public class User {
     private UserType type;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Loan> loans = new ArrayList<>();
+    private final List<Loan> loans = new ArrayList<>();
 
     protected User() {
     }
@@ -45,11 +45,29 @@ public class User {
         this.type = type;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public UserType getType() { return type; }
-    public List<Loan> getLoans() { return List.copyOf(loans); }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public UserType getType() {
+        return type;
+    }
+
+    public List<Loan> getLoans() {
+        return List.copyOf(loans);
+    }
+
+    public void addLoan(Loan loan) {
+        loans.add(loan);
+    }
 
     public void update(String name, String email, UserType type) {
         this.name = name;
