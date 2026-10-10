@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Docker Compose",
+      "type": "shell",
+      "command": "docker compose up --build --force-recreate --remove-orphans",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "docker-compose",
+        "pattern": {
+          "regexp": ".*"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Attaching to",
+          "endsPattern": "Started BibliotecaApplication|Tomcat started on port"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug Biblioteca in Docker",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005,
+      "projectName": "biblioteca",
+      "sourcePaths": [
+        "${workspaceFolder}/src/main/java",
+        "${workspaceFolder}/src/test/java"
+      ],
+      "stepFilters": {
+        "skipClasses": [
+          "java.*",
+          "javax.*",
+          "jakarta.*",
+          "jdk.*",
+          "sun.*",
+          "com.sun.*",
+          "org.springframework.*",
+          "org.hibernate.*",
+          "org.apache.*",
+          "org.postgresql.*",
+          "com.zaxxer.*"
+        ],
+        "skipSynthetics": true,
+        "skipStaticInitializers": true
+      }
+    }
+  ]
+}
