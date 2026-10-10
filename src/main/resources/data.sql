@@ -31,3 +31,32 @@ VALUES
         '9780547928227',
         TRUE
     ) ON CONFLICT (isbn) DO NOTHING;
+
+INSERT INTO
+    users (name, email, type)
+VALUES
+    (
+        'Ana Silva',
+        'ana.silva@example.com',
+        'STUDENT'
+    ),
+    (
+        'Bruno Costa',
+        'bruno.costa@example.com',
+        'STUDENT'
+    ),
+    (
+        'Carla Oliveira',
+        'carla.oliveira@example.com',
+        'TEACHER'
+    ),
+    (
+        'Daniel Santos',
+        'daniel.santos@example.com',
+        'TEACHER'
+    ),
+    (
+        'Alfredo Bartolomeu',
+        'alfredo.bartolomeu@example.com',
+        'STAFF'
+    ) ON CONFLICT (email) DO NOTHING;
