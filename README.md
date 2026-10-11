@@ -10,6 +10,20 @@ REST API for managing a library.
 - View borrowing reports
 - PostgreSQL database
 
+## Environment configuration
+
+This project intentionally keeps a `.env` file to simulate a realistic application setup. That makes the environment closer to a real deployment, while still making it easy to run locally.
+
+Rename `.env.example` to `.env` and fill it with these values:
+
+```env
+POSTGRES_DB=library
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+```
+
+This ensures the Docker Compose stack and the Java application connect to the same PostgreSQL credentials without issues.
+
 ## Run
 
 Requirements: Docker and Docker Compose.
