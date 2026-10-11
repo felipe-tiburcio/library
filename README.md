@@ -34,16 +34,22 @@ From the project root, run:
 ./run.sh
 ```
 
-The script builds and starts the application and PostgreSQL with Docker Compose. The API is available at:
+The script builds and starts the application and PostgreSQL with Docker Compose. The root endpoint redirects to Swagger UI:
 
 ```text
-http://localhost:8080
+http://localhost:8080/
 ```
 
 Swagger UI is available at:
 
 ```text
 http://localhost:8080/swagger-ui.html
+```
+
+The application health endpoint is available at:
+
+```text
+http://localhost:8080/actuator/health
 ```
 
 The generated OpenAPI document is available at `/v3/api-docs`.
