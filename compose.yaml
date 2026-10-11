@@ -7,7 +7,7 @@ services:
     volumes:
       - .:/workspace
       - maven-repository:/root/.m2
-    command: ["./dev-entrypoint.sh"]
+    command: ["./scripts/dev-entrypoint.sh"]
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}

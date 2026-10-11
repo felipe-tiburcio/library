@@ -17,9 +17,10 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y inotify-tools \
     && rm -rf /var/lib/apt/lists/*
 
-COPY pom.xml mvnw dev-entrypoint.sh ./
+COPY pom.xml mvnw ./
+COPY scripts ./scripts
 COPY .mvn .mvn
-RUN chmod +x mvnw dev-entrypoint.sh && ./mvnw dependency:go-offline -DskipTests
+RUN chmod +x mvnw scripts/dev-entrypoint.sh && ./mvnw dependency:go-offline -DskipTests
 
 FROM eclipse-temurin:21-jre
 
