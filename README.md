@@ -26,6 +26,14 @@ The script builds and starts the application and PostgreSQL with Docker Compose.
 http://localhost:8080
 ```
 
+Swagger UI is available at:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+The generated OpenAPI document is available at `/v3/api-docs`.
+
 To stop the services, press `Ctrl+C`.
 
 ## Main endpoints
