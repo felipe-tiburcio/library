@@ -21,7 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.ftatech.biblioteca.book.Book;
 import com.ftatech.biblioteca.book.BookService;
-import com.ftatech.biblioteca.user.Loan;
+import com.ftatech.biblioteca.report.CurrentlyBorrowedBookReport;
+import com.ftatech.biblioteca.report.TopBorrowedBookReport;
 import com.ftatech.biblioteca.user.User;
 import com.ftatech.biblioteca.user.UserType;
 

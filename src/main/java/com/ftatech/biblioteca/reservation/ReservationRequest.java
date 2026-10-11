@@ -1,4 +1,4 @@
-package com.ftatech.biblioteca.loan;
+package com.ftatech.biblioteca.reservation;
 
 public record ReservationRequest(Long bookId, Long userId) {
 }

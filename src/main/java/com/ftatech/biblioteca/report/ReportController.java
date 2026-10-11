@@ -1,6 +1,8 @@
-package com.ftatech.biblioteca.loan;
+package com.ftatech.biblioteca.report;
 
 import java.util.List;
+
+import com.ftatech.biblioteca.loan.LoanService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

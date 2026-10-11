@@ -1,4 +1,4 @@
-package com.ftatech.biblioteca.loan;
+package com.ftatech.biblioteca.report;
 
 import java.time.LocalDate;
 

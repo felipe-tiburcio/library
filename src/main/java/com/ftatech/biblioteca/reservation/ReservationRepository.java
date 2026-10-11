@@ -1,4 +1,4 @@
-package com.ftatech.biblioteca.loan;
+package com.ftatech.biblioteca.reservation;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

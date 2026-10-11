@@ -1,8 +1,9 @@
-package com.ftatech.biblioteca.user;
+package com.ftatech.biblioteca.loan;
 
 import java.time.LocalDate;
 
 import com.ftatech.biblioteca.book.Book;
+import com.ftatech.biblioteca.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;

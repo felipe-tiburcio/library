@@ -1,4 +1,4 @@
-package com.ftatech.biblioteca.loan;
+package com.ftatech.biblioteca.reservation;
 
 import java.time.LocalDateTime;
 
