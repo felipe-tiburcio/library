@@ -62,6 +62,12 @@ public class LoanService {
         return toResponse(loanRepository.save(loan));
     }
 
+    public List<LoanResponse> findAll() {
+        return loanRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     public LoanResponse findById(Long id) {
         return toResponse(findLoan(id));
     }

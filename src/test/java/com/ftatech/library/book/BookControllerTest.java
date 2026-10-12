@@ -13,6 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -32,27 +34,27 @@ class BookControllerTest {
 
     @Test
     void shouldFindAllBooks() throws Exception {
-        when(bookService.findAll()).thenReturn(List.of(
-                new Book("Clean Code", "Robert C. Martin", "9780132350884", true)));
+        when(bookService.findAll(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(
+                new Book("Clean Code", "Robert C. Martin", "9780132350884", true))));
 
         mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Clean Code"))
-                .andExpect(jsonPath("$[0].author").value("Robert C. Martin"))
-                .andExpect(jsonPath("$[0].isbn").value("9780132350884"))
-                .andExpect(jsonPath("$[0].available").value(true));
+                .andExpect(jsonPath("$.content[0].title").value("Clean Code"))
+                .andExpect(jsonPath("$.content[0].author").value("Robert C. Martin"))
+                .andExpect(jsonPath("$.content[0].isbn").value("9780132350884"))
+                .andExpect(jsonPath("$.content[0].available").value(true));
     }
 
     @Test
     void shouldFilterBooksByQueryParameters() throws Exception {
-        when(bookService.findAll(any(BookSearchCriteria.class))).thenReturn(List.of(
-                new Book("Clean Code", "Robert C. Martin", "9780132350884", true)));
+        when(bookService.findAll(any(BookSearchCriteria.class), any())).thenReturn(new PageImpl<>(List.of(
+                new Book("Clean Code", "Robert C. Martin", "9780132350884", true))));
 
         mockMvc.perform(get("/api/books")
                         .param("title", "clean")
                         .param("available", "true"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value("Clean Code"));
+                .andExpect(jsonPath("$.content[0].title").value("Clean Code"));
     }
 
     @Test

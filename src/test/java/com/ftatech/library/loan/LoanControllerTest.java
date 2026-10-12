@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,17 @@ class LoanControllerTest {
         mockMvc.perform(post("/api/loans/1/return"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.returnedAt").value("2026-10-10"));
+    }
+
+    @Test
+    void shouldFindAllLoans() throws Exception {
+        when(loanService.findAll()).thenReturn(List.of(new LoanResponse(1L, 2L, "Clean Code", 3L,
+                "Ana Silva", LocalDate.of(2026, 10, 1), LocalDate.of(2026, 10, 8), null)));
+
+        mockMvc.perform(get("/api/loans"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].bookTitle").value("Clean Code"));
     }
 
     @Test

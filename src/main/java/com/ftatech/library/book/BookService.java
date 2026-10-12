@@ -1,8 +1,10 @@
 package com.ftatech.library.book;
 
-import java.util.List;
 import java.util.Locale;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,21 +18,42 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public Page<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
-    public List<Book> findAll(BookSearchCriteria criteria) {
+    public Page<Book> findAll(BookSearchCriteria criteria, Pageable pageable) {
         if (criteria == null) {
-            return findAll();
+            return findAll(pageable);
         }
 
-        return bookRepository.findAll().stream()
-                .filter(book -> matchesTitle(book, criteria.title()))
-                .filter(book -> matchesAuthor(book, criteria.author()))
-                .filter(book -> matchesIsbn(book, criteria.isbn()))
-                .filter(book -> matchesAvailability(book, criteria.available()))
-                .toList();
+        return bookRepository.findAll(buildSpecification(criteria), pageable);
+    }
+
+    private Specification<Book> buildSpecification(BookSearchCriteria criteria) {
+        Specification<Book> specification = (root, query, builder) -> builder.conjunction();
+
+        if (criteria.title() != null && !criteria.title().isBlank()) {
+            specification = specification.and(containsIgnoreCaseField("title", criteria.title()));
+        }
+        if (criteria.author() != null && !criteria.author().isBlank()) {
+            specification = specification.and(containsIgnoreCaseField("author", criteria.author()));
+        }
+        if (criteria.isbn() != null && !criteria.isbn().isBlank()) {
+            specification = specification.and(containsIgnoreCaseField("isbn", criteria.isbn()));
+        }
+        if (criteria.available() != null) {
+            specification = specification.and((root, query, builder) ->
+                    builder.equal(root.get("available"), criteria.available()));
+        }
+
+        return specification;
+    }
+
+    private Specification<Book> containsIgnoreCaseField(String field, String value) {
+        String pattern = "%" + value.toLowerCase(Locale.ROOT) + "%";
+        return (root, query, builder) -> builder.like(
+                builder.lower(root.get(field)), pattern);
     }
 
     public Book findById(Long id) {
@@ -83,39 +106,4 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    private boolean matchesTitle(Book book, String title) {
-        if (title == null || title.isBlank()) {
-            return true;
-        }
-
-        return containsIgnoreCase(book.getTitle(), title);
-    }
-
-    private boolean matchesAuthor(Book book, String author) {
-        if (author == null || author.isBlank()) {
-            return true;
-        }
-
-        return containsIgnoreCase(book.getAuthor(), author);
-    }
-
-    private boolean matchesIsbn(Book book, String isbn) {
-        if (isbn == null || isbn.isBlank()) {
-            return true;
-        }
-
-        return containsIgnoreCase(book.getIsbn(), isbn);
-    }
-
-    private boolean matchesAvailability(Book book, Boolean available) {
-        if (available == null) {
-            return true;
-        }
-
-        return book.isAvailable() == available;
-    }
-
-    private boolean containsIgnoreCase(String value, String filter) {
-        return value.toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT));
-    }
 }

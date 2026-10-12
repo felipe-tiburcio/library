@@ -1,8 +1,10 @@
 package com.ftatech.library.book;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.springframework.http.ProblemDetail;
 
 @RestController
 @RequestMapping("/api/books")
@@ -33,38 +33,33 @@ public class BookController {
     }
 
     @Operation(summary = "List books")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Books found"),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameter", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Books found")
+    @ApiResponse(responseCode = "400", description = "Invalid query parameter", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @GetMapping
-    public List<Book> findAll(@RequestParam(required = false) String title,
+    public Page<Book> findAll(@RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String isbn,
-            @RequestParam(required = false) Boolean available) {
+            @RequestParam(required = false) Boolean available,
+            @PageableDefault(size = 20) Pageable pageable) {
         if (title == null && author == null && isbn == null && available == null) {
-            return bookService.findAll();
+            return bookService.findAll(pageable);
         }
 
-        return bookService.findAll(new BookSearchCriteria(title, author, isbn, available));
+        return bookService.findAll(new BookSearchCriteria(title, author, isbn, available), pageable);
     }
 
     @Operation(summary = "Find a book by ID")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Book found"),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Book found")
+    @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @GetMapping("/{id}")
     public Book findById(@PathVariable Long id) {
         return bookService.findById(id);
     }
 
     @Operation(summary = "Create a book")
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Book created"),
-            @ApiResponse(responseCode = "400", description = "Invalid book data", content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "409", description = "ISBN already registered", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    })
+    @ApiResponse(responseCode = "201", description = "Book created")
+    @ApiResponse(responseCode = "400", description = "Invalid book data", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "409", description = "ISBN already registered", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Book create(@Valid @RequestBody Book book) {
@@ -72,22 +67,18 @@ public class BookController {
     }
 
     @Operation(summary = "Update a book")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Book updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid book data", content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
-            @ApiResponse(responseCode = "409", description = "ISBN is already registered by another book", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    })
+    @ApiResponse(responseCode = "200", description = "Book updated")
+    @ApiResponse(responseCode = "400", description = "Invalid book data", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    @ApiResponse(responseCode = "409", description = "ISBN is already registered by another book", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @PutMapping("/{id}")
     public Book update(@PathVariable Long id, @Valid @RequestBody Book book) {
         return bookService.update(id, book);
     }
 
     @Operation(summary = "Delete a book")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Book deleted"),
-            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
-    })
+    @ApiResponse(responseCode = "204", description = "Book deleted")
+    @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

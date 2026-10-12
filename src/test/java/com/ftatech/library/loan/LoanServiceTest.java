@@ -92,6 +92,19 @@ class LoanServiceTest {
     }
 
     @Test
+    void shouldListAllLoans() {
+        Loan loan = createLoan(1L, "Clean Code", "Robert C. Martin", "9780132350884", 2L, "Ana Silva");
+        when(loanRepository.findAll()).thenReturn(List.of(loan));
+
+        List<LoanResponse> responses = loanService.findAll();
+
+        assertEquals(1, responses.size());
+        assertEquals(11L, responses.get(0).id());
+        assertEquals(1L, responses.get(0).bookId());
+        assertEquals(2L, responses.get(0).userId());
+    }
+
+    @Test
     void shouldListTopBorrowedBooks() {
         Loan firstLoan = createLoan(1L, "Clean Code", "Robert C. Martin", "9780132350884", 2L, "Ana Silva");
         Loan secondLoan = createLoan(1L, "Clean Code", "Robert C. Martin", "9780132350884", 3L, "Bruno Costa");
